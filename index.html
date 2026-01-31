@@ -21,7 +21,8 @@
         .category-btn.active { background-color: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); border-color: transparent; }
         .add-btn { box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); }
     </style>
-</head>
+</head> <link rel="manifest" href="manifest.json">
+
 <body class="pb-32 select-none text-slate-800">
 
     <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center transition-opacity duration-500">
@@ -169,12 +170,12 @@
         renderCategories();
         renderProducts();
         
-        // إخفاء شاشة التحميل
-        setTimeout(() => {
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-        }, 800);
-    };
+// إخفاء شاشة التحميل
+settimeout(() => {
+    document.getelementbyid('loader').style.opacity = '0';
+    settimeout(() => document.getelementbyid('loader').style.display = 'none', 500);
+}, 800);
+
 
     function renderCategories() {
         const cats = ['الكل', ...new Set(PRODUCTS_DB.map(p => p.cat))];
