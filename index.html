@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الصياد لتجارة الأسماك | قائمة الطلبات</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; }
+        .product-card { transition: all 0.2s ease; }
+        .product-card:active { transform: scale(0.98); }
+        .category-btn.active { background-color: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); border-color: transparent; }
+        .add-btn { box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2); }
+    </style>
+</head>
+<body class="pb-32 select-none text-slate-800">
+
+    <div id="loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="text-4xl animate-bounce mb-4">🐟</div>
+        <p class="font-bold text-slate-500">جاري تحميل قائمة الصياد...</p>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 glass-header px-4 py-3">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white text-lg shadow-blue-200 shadow-lg">
+                    <i class="fa-solid fa-anchor"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg leading-none text-slate-900">الصياد برو</h1>
+                    <p class="text-[10px] text-slate-500 font-bold mt-1">طازة من البحر لباب بيتك</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('info-modal').style.display='flex'" class="w-9 h-9 bg-slate-100 rounded-full text-slate-500">
+                <i class="fa-solid fa-store"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto pt-20 px-4">
+        
+        <div class="bg-gradient-to-br from-blue-700 to-blue-500 rounded-2xl p-4 text-white shadow-lg mb-6 relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="font-bold text-lg mb-1">أهلاً بك يا فندم 👋</h2>
+                <p class="text-xs opacity-90 leading-relaxed">جميع الأسماك طازة فريش، بأسعار الميناء.</p>
+            </div>
+            <i class="fa-solid fa-fish absolute -left-4 -bottom-4 text-8xl text-white opacity-10 rotate-12"></i>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-5">
+            <div class="flex gap-2">
+                <input type="text" id="cust-name" placeholder="الاسم الكريم" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-blue-500 transition-colors">
+                <div class="dir-ltr">
+                    <input type="tel" id="cust-phone" placeholder="رقم الهاتف" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-blue-500 transition-colors text-right">
+                </div>
+            </div>
+        </div>
+
+        <div class="sticky top-[68px] z-40 bg-[#f8fafc]/95 backdrop-blur py-2 mb-2 -mx-4 px-4 overflow-x-auto no-scrollbar flex gap-2" id="cats-container">
+            </div>
+
+        <div class="relative mb-4">
+            <i class="fa-solid fa-search absolute right-4 top-3.5 text-slate-400 text-sm"></i>
+            <input type="text" id="search-box" onkeyup="filterProducts()" placeholder="ابحث في المنيو (مثلاً: جمبري)..." class="w-full bg-white border border-slate-200 rounded-xl pr-10 pl-4 py-3 text-sm font-bold outline-none focus:border-blue-500 shadow-sm">
+        </div>
+
+        <div id="products-grid" class="space-y-3 pb-8">
+            </div>
+
+    </main>
+
+    <div id="cart-bar" class="fixed bottom-6 left-4 right-4 max-w-md mx-auto z-50 transform translate-y-[150%] transition-transform duration-300">
+        <button onclick="checkout()" class="w-full bg-slate-900 text-white p-2 rounded-[25px] shadow-2xl flex items-center pr-2 pl-6 gap-4 active:scale-95 transition-transform">
+            <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-black shadow-lg text-sm" id="cart-count">0</div>
+            <div class="flex-1 text-right">
+                <div class="font-black text-base">إتمام الطلب</div>
+                <div class="text-[10px] opacity-70">عبر واتساب مباشرة 🚀</div>
+            </div>
+            <div class="text-left pl-2">
+                <span class="font-black text-lg text-blue-400" id="cart-total">0</span>
+                <span class="text-xs text-slate-400">جنية</span>
+            </div>
+        </button>
+    </div>
+
+    <div id="info-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4" onclick="this.style.display='none'">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative" onclick="event.stopPropagation()">
+            <h3 class="font-black text-xl mb-4 text-center text-blue-600">عن الصياد</h3>
+            <ul class="space-y-3 text-sm font-bold text-slate-600 list-disc pr-4">
+                <li>الفرع الرئيسي: الإسكندرية (ميناء أسماك المعدية)</li>
+                <li>الفرع الثاني: محافظة البحر الأحمر</li>
+                <li>يوجد توصيل لمحافظات الصعيد</li>
+                <li>أسعار خاصة للفنادق والمطاعم</li>
+            </ul>
+            <div class="mt-6 text-center">
+                <p class="text-xs text-slate-400">تم التطوير بواسطة: الصياد برو v2.1</p>
+            </div>
+            <button onclick="document.getElementById('info-modal').style.display='none'" class="absolute top-4 right-4 text-slate-400 hover:text-red-500">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+<script>
+    // ==========================================
+    // ⚙️ إعدادات المتجر (قم بتعديل الرقم هنا)
+    // ==========================================
+    const CONFIG = {
+        whatsappNumber: "201000000000", // 👈 ضع رقم الواتساب هنا (مع كود الدولة 2)
+        shopName: "شركة الصياد لتجارة الأسماك"
+    };
+
+    // ==========================================
+    // 📦 قاعدة بيانات المنتجات (من ملف PDF)
+    // ==========================================
+    // تم استخدام صور توضيحية لأن الملف الأصلي نص فقط
+    const PRODUCTS_DB = [
+        // --- ركن الأسماك ---
+        {id: 1, cat: "الأسماك 🐟", name: "بوري وسط (3 ف كيلو)", price: 220, img: "https://images.unsplash.com/photo-1598511757337-fe2cafc31ba0?w=400"},
+        {id: 2, cat: "الأسماك 🐟", name: "بربوني", price: 300, img: "https://images.unsplash.com/photo-1535916056636-97b709748d4d?w=400"},
+        {id: 3, cat: "الأسماك 🐟", name: "سردين", price: 150, img: "https://images.unsplash.com/photo-1606850780554-b55d2acfa5da?w=400"},
+        {id: 4, cat: "الأسماك 🐟", name: "مكرونة", price: 190, img: "https://images.unsplash.com/photo-1627993079948-26f63454b5df?w=400"},
+        {id: 5, cat: "الأسماك 🐟", name: "ماكريل كبير", price: 170, img: "https://images.unsplash.com/photo-1544943910-4c1dc44a6e8b?w=400"},
+        {id: 6, cat: "الأسماك 🐟", name: "هامور تصدير", price: 380, img: "https://images.unsplash.com/photo-1534948216015-843143f7aa67?w=400"},
+        {id: 7, cat: "الأسماك 🐟", name: "شعور حر", price: 380, img: "https://images.unsplash.com/photo-1615141982880-1313d4182060?w=400"},
+        {id: 8, cat: "الأسماك 🐟", name: "خريت", price: 220, img: "https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=400"},
+        {id: 9, cat: "الأسماك 🐟", name: "سلمون جزل صافي", price: 800, img: "https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?w=400"},
+        {id: 10, cat: "الأسماك 🐟", name: "فيليه بياض", price: 340, img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400"},
+        {id: 11, cat: "الأسماك 🐟", name: "فيليه تونة", price: 340, img: "https://images.unsplash.com/photo-1599322082200-e79c2354c0e5?w=400"},
+
+        // --- ركن الفسفور ---
+        {id: 12, cat: "الفسفور 🦐", name: "استاكوزا وسط", price: 1200, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=400"},
+        {id: 13, cat: "الفسفور 🦐", name: "جمبري جامبو", price: 850, img: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400"},
+        {id: 14, cat: "الفسفور 🦐", name: "جمبري كبير", price: 750, img: "https://images.unsplash.com/photo-1623961990059-28356e226a77?w=400"},
+        {id: 15, cat: "الفسفور 🦐", name: "جمبري وسط", price: 650, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=400"},
+        {id: 16, cat: "الفسفور 🦐", name: "جمبري لحم صغير", price: 650, img: "https://images.unsplash.com/photo-1625937751876-4515cd8e78bd?w=400"},
+        {id: 17, cat: "الفسفور 🦐", name: "أخطبوط وسط", price: 450, img: "https://images.unsplash.com/photo-1594910609328-913a579698d2?w=400"},
+        {id: 18, cat: "الفسفور 🦐", name: "أخطبوط صغير", price: 350, img: "https://images.unsplash.com/photo-1565541016629-37367c327299?w=400"},
+        {id: 19, cat: "الفسفور 🦐", name: "سبيط كبير", price: 480, img: "https://images.unsplash.com/photo-1605493636502-df660e527f30?w=400"},
+        {id: 20, cat: "الفسفور 🦐", name: "بطارخ", price: 650, img: "https://images.unsplash.com/photo-1623594830172-27712e52418e?w=400"},
+        {id: 21, cat: "الفسفور 🦐", name: "كاليماري كبير", price: 450, img: "https://images.unsplash.com/photo-1605493636496-e137b2d5a7d7?w=400"},
+        {id: 22, cat: "الفسفور 🦐", name: "كاليماري وسط", price: 400, img: "https://images.unsplash.com/photo-1590758406208-4f89d31d9995?w=400"},
+        {id: 23, cat: "الفسفور 🦐", name: "بلح بحر كبير", price: 200, img: "https://images.unsplash.com/photo-1562919934-2df3556012cc?w=400"},
+        {id: 24, cat: "الفسفور 🦐", name: "جندوفلي", price: 220, img: "https://images.unsplash.com/photo-1616782293888-29408b8b3765?w=400"},
+        
+        // --- وجبات الصياد ---
+        {id: 25, cat: "وجبات الصياد 🥘", name: "سي فود الصياد (كيلو)", price: 350, img: "https://images.unsplash.com/photo-1626804475297-411d8634521d?w=400"},
+        {id: 26, cat: "وجبات الصياد 🥘", name: "سي فود الصياد (نصف كيلو)", price: 200, img: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=400"},
+    ];
+
+    let cart = {}; 
+    let activeCat = 'الكل';
+
+    // ==========================================
+    // 🚀 كود التشغيل الأساسي
+    // ==========================================
+    window.onload = () => {
+        loadUserData();
+        loadCart();
+        renderCategories();
+        renderProducts();
+        
+        // إخفاء شاشة التحميل
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+        }, 800);
+    };
+
+    function renderCategories() {
+        const cats = ['الكل', ...new Set(PRODUCTS_DB.map(p => p.cat))];
+        document.getElementById('cats-container').innerHTML = cats.map(c => `
+            <button onclick="setActiveCat('${c}')" 
+                class="category-btn px-5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border border-slate-200 bg-white text-slate-500 ${activeCat === c ? 'active' : ''}">
+                ${c}
+            </button>
+        `).join('');
+    }
+
+    function setActiveCat(c) {
+        activeCat = c;
+        renderCategories();
+        renderProducts();
+    }
+
+    function renderProducts() {
+        const query = document.getElementById('search-box').value.toLowerCase();
+        
+        let filtered = PRODUCTS_DB;
+        if (activeCat !== 'الكل') filtered = filtered.filter(p => p.cat === activeCat);
+        if (query) filtered = filtered.filter(p => p.name.toLowerCase().includes(query));
+
+        const html = filtered.map(p => {
+            const qty = cart[p.id] ? cart[p.id].qty : 0;
+            return `
+            <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-slate-50 flex gap-3 items-center">
+                <div cla
